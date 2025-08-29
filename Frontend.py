@@ -17,10 +17,10 @@ if userInput:
     with st.chat_message("user"):
         st.markdown(userInput)
 
-    response = chatbot.invoke({
-        'query': userInput
-    })
-
-    st.session_state.message_history.append({"role": "assistant", "content": response})
     with st.chat_message("assistant"):
-        st.markdown(response)
+        response = st.write_stream(
+            chunk for chunk in chatbot.stream({
+                'query': userInput
+            })
+        )
+    st.session_state.message_history.append({"role": "assistant", "content": response})
