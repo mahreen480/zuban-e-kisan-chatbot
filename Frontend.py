@@ -1,8 +1,16 @@
 import streamlit as st
-from Backend import chatbot
+from Backend import graph as chatbot, HumanMessage
+
+st.set_page_config(page_title="Zuban-e-Kisan Chatbot", page_icon="👨‍🌾", layout="wide")
 
 st.title("👨‍🌾 Zuban-e-Kisan Chatbot")
 st.caption("Prototype chatbot module for Zuban-e-Kisan — bridging farmers and technology through conversational support.")
+
+CONFIG = {
+    'configurable':{
+        'thread_id': 1
+    }
+}
 
 if "message_history" not in st.session_state:
     st.session_state.message_history = []
@@ -19,8 +27,9 @@ if userInput:
 
     with st.chat_message("assistant"):
         response = st.write_stream(
-            chunk for chunk in chatbot.stream({
-                'query': userInput
-            })
-        )
+            message_chunk.content for message_chunk, meta_data in chatbot.stream(
+            { "messages": [HumanMessage(content=userInput)]},
+            config=CONFIG,
+            stream_mode='messages'
+        ))
     st.session_state.message_history.append({"role": "assistant", "content": response})

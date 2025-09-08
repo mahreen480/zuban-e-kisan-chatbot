@@ -6,5 +6,7 @@ langchain-huggingface
 
 langchain-groq
 
+langgraph
+
 python-dotenv
 streamlit
